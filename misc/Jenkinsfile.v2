@@ -9,7 +9,7 @@ node {
      def myTestContainer = docker.image('node')
      myTestContainer.pull()
      myTestContainer.inside {
-       sh 'sudo chown -R 111:113 "/.npm"'
+       sh 'chown -R 111:113 "/.npm"'
        sh 'npm install --only=dev'
        sh 'npm test'
      }
@@ -19,7 +19,7 @@ node {
      def myTestContainer = docker.image('node')
      myTestContainer.pull()
      myTestContainer.inside("--link ${mysql.id}:mysql") { // using linking, mysql will be available at host: mysql, port: 3306
-          sh 'sudo chown -R 111:113 "/.npm"'
+          sh 'chown -R 111:113 "/.npm"'
           sh 'npm install --only=dev' 
           sh 'npm test'                     
      }                                   
