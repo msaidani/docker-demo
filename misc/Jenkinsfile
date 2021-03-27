@@ -1,0 +1,19 @@
+node {
+   def commit_id
+   stage('Preparation') {
+     checkout scm
+     sh "git rev-parse --short HEAD > .git/commit-id"                        
+     commit_id = readFile('.git/commit-id').trim()
+   }
+   stage('test') {
+     nodejs(nodeJSInstallationName: 'nodejs') {
+       sh 'npm install --only=dev'
+       sh 'npm test'
+     }
+   }
+   stage('docker build/push') {
+     docker.withRegistry('https://index.docker.io/v1/', 'ca0b3c73-e8e2-426b-aab7-57331ad5dda6') {
+       def app = docker.build("210286/testpipleline:${commit_id}", '.').push()
+     }
+   }
+}
